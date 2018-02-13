@@ -1,5 +1,9 @@
 package com.app.mgu.multipletable1;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +43,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnInsert.setOnClickListener(this);
 
         insertSampleData();
+
+        ContentValues p=new ContentValues();
+        p.put(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.google");
+        p.put(ContactsContract.RawContacts.ACCOUNT_NAME, "email");
+        Uri rowcontect= getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, p);
+        long rawcontectid= ContentUris.parseId(rowcontect);
+
+        ContentValues value = new ContentValues();
+        value.put(ContactsContract.Contacts.Data.RAW_CONTACT_ID,rawcontectid);
+        value.put(android.provider.ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
+        value.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "kunja gajjar");
+        getContentResolver().insert(android.provider.ContactsContract.Data.CONTENT_URI, value);
+
+        //adding the contents to the data
+        ContentValues ppv=new ContentValues();
+        ppv.put(android.provider.ContactsContract.Data.RAW_CONTACT_ID, rawcontectid);
+        ppv.put(android.provider.ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+        ppv.put(ContactsContract.CommonDataKinds.Phone.NUMBER, "1111111111");
+        ppv.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
+        this.getContentResolver().insert(android.provider.ContactsContract.Data.CONTENT_URI, ppv);
+
     }
 
     private void insertSampleData() {
